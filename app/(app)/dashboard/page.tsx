@@ -96,11 +96,11 @@ export default function DashboardPage() {
       <div className="flex-1 overflow-y-auto p-6 space-y-5">
         {/* Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <KpiCard label="Total Clients" value={stats.total} icon={<Users size={13} />} />
-          <KpiCard label="Active" value={stats.active} subtext="in pipeline" />
-          <KpiCard label="Matched" value={stats.matched} trend={`${stats.successRate}%`} trendUp />
-          <KpiCard label="Success Rate" value={`${stats.successRate}%`} />
-          <KpiCard label="New This Week" value={stats.newThisWeek} trend={stats.newThisWeek > 0 ? `+${stats.newThisWeek}` : undefined} trendUp />
+          <KpiCard label="Total Clients"  value={stats.total}            icon={<Users size={13} />} accent="gray"   />
+          <KpiCard label="Active"         value={stats.active}           subtext="in pipeline"      accent="green"  />
+          <KpiCard label="Matched"        value={stats.matched}          trend={`${stats.successRate}%`} trendUp    accent="blue"   />
+          <KpiCard label="Success Rate"   value={`${stats.successRate}%`}                           accent="indigo" />
+          <KpiCard label="New This Week"  value={stats.newThisWeek}      trend={stats.newThisWeek > 0 ? `+${stats.newThisWeek}` : undefined} trendUp={stats.newThisWeek > 0} accent="amber" />
         </div>
 
         {/* Table + Alerts */}

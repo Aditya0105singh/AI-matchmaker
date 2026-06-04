@@ -134,7 +134,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                 onClick={() => setTab(tid)}
                 className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   tab === tid
-                    ? "border-gray-900 text-gray-900"
+                    ? "border-indigo-600 text-indigo-700"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -146,7 +146,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Tab content */}
-        <div className="p-6 max-w-5xl">
+        <div className="p-6 max-w-5xl bg-[#F4F6F8] min-h-full">
           {tab === "overview" && <ProfileOverview profile={client} />}
           {tab === "family" && <ProfileFamily profile={client} />}
           {tab === "preferences" && <ProfilePreferences profile={client} />}

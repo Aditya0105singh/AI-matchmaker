@@ -30,7 +30,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="flex flex-col h-screen bg-white border-r border-gray-200 shrink-0 z-20 transition-[width] duration-200"
+      className="flex flex-col h-screen bg-white border-r border-gray-200 shrink-0 z-20 transition-[width] duration-200 shadow-[1px_0_0_0_#E5E7EB]"
       style={{ width: collapsed ? 52 : 216 }}
     >
       {/* Logo */}
@@ -58,7 +58,7 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-colors group",
                 active
-                  ? "bg-gray-100 text-gray-900 font-medium"
+                  ? "bg-indigo-50 text-indigo-700 font-medium border-l-2 border-indigo-600 rounded-l-none"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >

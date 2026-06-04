@@ -7,19 +7,20 @@ function Field({ label, value }: { label: string; value?: string | number | null
   if (value === undefined || value === null || value === "") return null;
   return (
     <div>
-      <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm text-gray-800">{value}</p>
+      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-sm font-medium text-gray-800">{value}</p>
     </div>
   );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
-      <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 border-b border-gray-100 pb-1.5">
+    <div className="bg-white border border-gray-200 rounded-lg p-5">
+      <h3 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <span className="h-3.5 w-0.5 bg-indigo-500 rounded-full inline-block" />
         {title}
       </h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3">{children}</div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4">{children}</div>
     </div>
   );
 }

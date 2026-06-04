@@ -5,8 +5,8 @@ import type { Profile } from "@/types";
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between py-2.5 border-b border-gray-100 last:border-0">
-      <span className="text-xs text-gray-500 w-36 shrink-0">{label}</span>
-      <span className="text-xs text-gray-800 text-right flex-1">{children}</span>
+      <span className="text-xs font-medium text-gray-500 w-36 shrink-0">{label}</span>
+      <span className="text-xs font-medium text-gray-800 text-right flex-1">{children}</span>
     </div>
   );
 }
@@ -14,8 +14,9 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-        <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{title}</h3>
+      <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+        <span className="h-3.5 w-0.5 bg-indigo-500 rounded-full inline-block" />
+        <h3 className="text-xs font-bold text-gray-600 uppercase tracking-widest">{title}</h3>
       </div>
       <div className="px-4">{children}</div>
     </div>

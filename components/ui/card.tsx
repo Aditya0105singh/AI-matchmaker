@@ -35,22 +35,28 @@ interface KpiCardProps {
   trend?: string;
   trendUp?: boolean;
   icon?: React.ReactNode;
+  accent?: "gray" | "green" | "blue" | "amber" | "indigo";
 }
 
-export function KpiCard({ label, value, subtext, trend, trendUp, icon }: KpiCardProps) {
+const ACCENT_TOP: Record<NonNullable<KpiCardProps["accent"]>, string> = {
+  gray:   "border-t-2 border-t-gray-400",
+  green:  "border-t-2 border-t-green-500",
+  blue:   "border-t-2 border-t-blue-500",
+  amber:  "border-t-2 border-t-amber-500",
+  indigo: "border-t-2 border-t-indigo-500",
+};
+
+export function KpiCard({ label, value, subtext, trend, trendUp, icon, accent = "gray" }: KpiCardProps) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 px-5 py-4">
+    <div className={cn("bg-white rounded-lg border border-gray-200 px-5 py-4", ACCENT_TOP[accent])}>
       <div className="flex items-start justify-between">
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</p>
-        {icon && <span className="text-gray-400">{icon}</span>}
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">{label}</p>
+        {icon && <span className="text-gray-300">{icon}</span>}
       </div>
       <div className="mt-2 flex items-end gap-2">
-        <span className="text-2xl font-semibold text-gray-900 tabular-nums">{value}</span>
+        <span className="text-2xl font-bold text-gray-900 tabular-nums">{value}</span>
         {trend && (
-          <span className={cn(
-            "text-xs font-medium mb-0.5",
-            trendUp ? "text-green-600" : "text-red-500"
-          )}>
+          <span className={cn("text-xs font-medium mb-0.5", trendUp ? "text-green-600" : "text-red-500")}>
             {trendUp ? "↑" : "↓"} {trend}
           </span>
         )}
