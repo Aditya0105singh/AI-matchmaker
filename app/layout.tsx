@@ -23,14 +23,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           position="top-right"
           toastOptions={{
             style: {
-              background: "#18181b",
-              color: "#f4f4f5",
-              border: "1px solid #3f3f46",
+              background: "#ffffff",
+              color: "#18181b",
+              border: "1px solid #e4e4e7",
               borderRadius: "10px",
               fontSize: "14px",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
             },
-            success: { iconTheme: { primary: "#34d399", secondary: "#18181b" } },
-            error: { iconTheme: { primary: "#f87171", secondary: "#18181b" } },
+            success: { iconTheme: { primary: "#059669", secondary: "#ffffff" } },
+            error: { iconTheme: { primary: "#e11d48", secondary: "#ffffff" } },
           }}
         />
       </body>

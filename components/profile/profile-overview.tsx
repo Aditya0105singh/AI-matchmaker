@@ -55,7 +55,7 @@ export function ProfileOverview({ profile }: { profile: Profile }) {
           <div className="flex items-center gap-2">
             <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-fuchsia-600 to-violet-500 rounded-full"
+                className="h-full bg-linear-to-r from-fuchsia-600 to-violet-500 rounded-full"
                 style={{ width: `${profile.relationshipReadinessScore}%` }}
               />
             </div>

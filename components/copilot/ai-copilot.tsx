@@ -145,7 +145,7 @@ Matched: ${clients.filter((c) => c.clientStatus === "matched").length}`);
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => setCopilotOpen(true)}
-            className="fixed bottom-6 right-6 h-14 w-14 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-violet-700 text-white shadow-2xl shadow-fuchsia-900/50 flex items-center justify-center hover:scale-105 transition-transform z-40 animate-pulse-glow"
+            className="fixed bottom-6 right-6 h-14 w-14 rounded-2xl bg-linear-to-br from-fuchsia-600 to-violet-700 text-white shadow-2xl shadow-fuchsia-900/50 flex items-center justify-center hover:scale-105 transition-transform z-40 animate-pulse-glow"
           >
             <Bot size={22} />
           </motion.button>
@@ -165,8 +165,8 @@ Matched: ${clients.filter((c) => c.clientStatus === "matched").length}`);
           >
             <div className="bg-zinc-900 border border-zinc-700/50 rounded-2xl shadow-2xl shadow-black/50 flex flex-col overflow-hidden h-full">
               {/* Header */}
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-800 bg-gradient-to-r from-fuchsia-900/20 to-violet-900/20 shrink-0">
-                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-800 bg-linear-to-r from-fuchsia-900/20 to-violet-900/20 shrink-0">
+                <div className="h-8 w-8 rounded-xl bg-linear-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center">
                   <Bot size={15} className="text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -236,7 +236,7 @@ Matched: ${clients.filter((c) => c.clientStatus === "matched").length}`);
                         )}
                       >
                         {msg.role === "assistant" && (
-                          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center shrink-0">
+                          <div className="h-7 w-7 rounded-lg bg-linear-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center shrink-0">
                             <Bot size={13} className="text-white" />
                           </div>
                         )}

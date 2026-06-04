@@ -36,7 +36,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-zinc-800 shrink-0">
-        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center shrink-0 shadow-lg shadow-fuchsia-900/30">
+        <div className="h-8 w-8 rounded-lg bg-linear-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center shrink-0 shadow-lg shadow-fuchsia-900/30">
           <Heart size={16} className="text-white fill-white" />
         </div>
         <AnimatePresence>
@@ -65,7 +65,7 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
                 active
-                  ? "bg-fuchsia-600/20 text-fuchsia-300 border border-fuchsia-600/20"
+                  ? "bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-200"
                   : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
               )}
             >

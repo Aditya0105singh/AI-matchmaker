@@ -265,7 +265,7 @@ Relationship readiness score: ${client!.relationshipReadinessScore}/100. Profile
             {/* AI Copilot CTA */}
             <div
               onClick={openCopilotForClient}
-              className="bg-gradient-to-r from-fuchsia-900/20 to-violet-900/20 border border-fuchsia-700/20 rounded-xl p-5 cursor-pointer hover:border-fuchsia-600/30 transition-colors"
+              className="bg-linear-to-r from-fuchsia-900/20 to-violet-900/20 border border-fuchsia-700/20 rounded-xl p-5 cursor-pointer hover:border-fuchsia-600/30 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-fuchsia-600/20 flex items-center justify-center">

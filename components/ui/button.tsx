@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white shadow-lg shadow-fuchsia-900/30 hover:from-fuchsia-500 hover:to-violet-500 hover:shadow-fuchsia-800/40 active:scale-[0.98]",
+        primary: "bg-linear-to-r from-fuchsia-600 to-violet-600 text-white shadow-lg shadow-fuchsia-900/30 hover:from-fuchsia-500 hover:to-violet-500 hover:shadow-fuchsia-800/40 active:scale-[0.98]",
         secondary: "bg-zinc-800 text-zinc-100 border border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 active:scale-[0.98]",
         ghost: "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 active:scale-[0.98]",
         destructive: "bg-rose-600/20 text-rose-400 border border-rose-600/30 hover:bg-rose-600/30 hover:text-rose-300",

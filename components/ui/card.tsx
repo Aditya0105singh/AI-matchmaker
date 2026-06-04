@@ -49,7 +49,7 @@ export function KpiCard({
     warning: "from-amber-900/20 to-orange-900/20 border-amber-700/30",
   };
   return (
-    <div className={`rounded-xl border bg-gradient-to-br p-5 ${variantStyles[variant]}`}>
+    <div className={`rounded-xl border bg-linear-to-br p-5 ${variantStyles[variant]}`}>
       <div className="flex items-start justify-between mb-3">
         <span className="text-xs text-zinc-400 uppercase tracking-wider font-medium">{label}</span>
         <span className="text-zinc-500">{icon}</span>

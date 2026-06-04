@@ -77,7 +77,7 @@ export default function LoginPage() {
         <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-8 shadow-2xl">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center mb-4 shadow-lg shadow-fuchsia-900/40">
+            <div className="h-14 w-14 rounded-2xl bg-linear-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center mb-4 shadow-lg shadow-fuchsia-900/40">
               <Heart size={26} className="text-white fill-white" />
             </div>
             <h1 className="text-2xl font-bold text-zinc-100">TDC Matchmaker AI</h1>

@@ -19,7 +19,7 @@ export function Avatar({ id, name, size = "md", className }: AvatarProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-full font-semibold text-white shrink-0 bg-gradient-to-br",
+        "inline-flex items-center justify-center rounded-full font-semibold text-white shrink-0 bg-linear-to-br",
         gradient,
         sizeMap[size],
         className
