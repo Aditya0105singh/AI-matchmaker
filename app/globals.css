@@ -82,9 +82,24 @@ body {
   from { opacity: 0; transform: translateX(-100%); }
   to   { opacity: 1; transform: translateX(0); }
 }
+@keyframes chat-popup {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Chatbot button: double-bounce then rest — natural "tap me" feel */
+@keyframes chatbot-bounce {
+  0%,  100% { transform: translateY(0)   scale(1);    }
+  12%        { transform: translateY(-9px) scale(1.04); }
+  22%        { transform: translateY(0)   scale(1);    }
+  32%        { transform: translateY(-5px) scale(1.02); }
+  42%        { transform: translateY(0)   scale(1);    }
+}
 
 .animate-fade-up     { animation: fade-up 0.2s ease forwards; }
 .animate-slide-right { animation: slide-right 0.25s ease forwards; }
+.animate-chat-popup  { animation: chat-popup 0.2s ease forwards; }
+.animate-chatbot-bounce { animation: chatbot-bounce 5.5s ease-in-out infinite; }
 
 /* ── Utility ────────────────────────────────────────────────────────────────── */
 .truncate-2 {

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, LogOut, ChevronLeft,
-  ChevronRight, Sparkles, Heart
+  ChevronRight, Heart
 } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { Avatar } from "@/components/ui/avatar";
@@ -18,7 +18,7 @@ const NAV = [
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { sidebarCollapsed, toggleSidebar, logout, setCopilotOpen } = useAppStore();
+  const { sidebarCollapsed, toggleSidebar, logout } = useAppStore();
 
   function handleLogout() {
     logout();
@@ -68,15 +68,6 @@ export function Sidebar() {
           );
         })}
 
-        {/* AI Assistant */}
-        <button
-          onClick={() => setCopilotOpen(true)}
-          title={collapsed ? "AI Assistant" : undefined}
-          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors w-full mt-1"
-        >
-          <Sparkles size={15} className="shrink-0 text-blue-500" />
-          {!collapsed && <span className="whitespace-nowrap">AI Assistant</span>}
-        </button>
       </nav>
 
       {/* Collapse */}
