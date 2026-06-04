@@ -134,6 +134,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "tdc-store",
+      skipHydration: true,
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
         notes: state.notes,

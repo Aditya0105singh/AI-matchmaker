@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Heart, Lock, User, Eye, EyeOff, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
@@ -11,25 +11,41 @@ import toast from "react-hot-toast";
 export default function LoginPage() {
   const router = useRouter();
   const login = useAppStore((s) => s.login);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
+
+    // Read directly from the DOM — bypasses autofill/onChange sync issues
+    const formData = new FormData(e.currentTarget);
+    const username = (formData.get("username") as string ?? "").trim();
+    const password = (formData.get("password") as string ?? "").trim();
+
+    await new Promise((r) => setTimeout(r, 500));
+
     const ok = login(username, password);
     setLoading(false);
+
     if (ok) {
       toast.success("Welcome back, Riya!");
       router.push("/dashboard");
     } else {
       setError("Invalid credentials. Try matchmaker / tdc2024");
     }
+  }
+
+  function fillDemo() {
+    const form = formRef.current;
+    if (!form) return;
+    const u = form.elements.namedItem("username") as HTMLInputElement;
+    const p = form.elements.namedItem("password") as HTMLInputElement;
+    if (u) u.value = "matchmaker";
+    if (p) p.value = "tdc2024";
   }
 
   return (
@@ -58,7 +74,6 @@ export default function LoginPage() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="relative w-full max-w-md mx-4"
       >
-        {/* Card */}
         <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-8 shadow-2xl">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
@@ -69,20 +84,19 @@ export default function LoginPage() {
             <p className="text-sm text-zinc-500 mt-1">The Date Crew · Internal Platform</p>
           </div>
 
-          {/* Welcome */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-zinc-200">Welcome back</h2>
             <p className="text-sm text-zinc-500">Sign in to your matchmaker dashboard</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-zinc-400 mb-1.5">Username</label>
               <Input
+                name="username"
                 type="text"
                 placeholder="matchmaker"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                defaultValue=""
                 icon={<User size={15} />}
                 autoComplete="username"
                 required
@@ -93,10 +107,10 @@ export default function LoginPage() {
               <label className="block text-xs font-medium text-zinc-400 mb-1.5">Password</label>
               <div className="relative">
                 <Input
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  defaultValue=""
                   icon={<Lock size={15} />}
                   autoComplete="current-password"
                   required
@@ -118,9 +132,13 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-6 p-3 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
-            <p className="text-xs text-zinc-500 font-medium mb-1.5">Demo Credentials</p>
+          {/* Demo credentials — click to fill */}
+          <button
+            type="button"
+            onClick={fillDemo}
+            className="mt-6 w-full p-3 bg-zinc-800/50 rounded-xl border border-zinc-700/50 hover:border-zinc-600 transition-colors text-left"
+          >
+            <p className="text-xs text-zinc-500 font-medium mb-1.5">Demo Credentials <span className="text-fuchsia-500">(click to fill)</span></p>
             <div className="space-y-1">
               <div className="flex gap-2 text-xs">
                 <span className="text-zinc-500 w-20">Username:</span>
@@ -131,7 +149,7 @@ export default function LoginPage() {
                 <code className="text-fuchsia-400">tdc2024</code>
               </div>
             </div>
-          </div>
+          </button>
         </div>
 
         <p className="text-center text-xs text-zinc-600 mt-4">
