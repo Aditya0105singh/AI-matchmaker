@@ -1,167 +1,197 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Search, Filter, SortAsc, ArrowRight } from "lucide-react";
+import { Search, ChevronUp, ChevronDown } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { Avatar } from "@/components/ui/avatar";
-import { Badge, ClientStatusBadge } from "@/components/ui/badge";
+import { ClientStatusBadge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@/components/ui/progress";
-import { formatCurrency, timeAgo, getScoreColor } from "@/lib/utils";
+import { formatCurrency, timeAgo } from "@/lib/utils";
 import type { Profile } from "@/types";
 
-const STATUS_FILTERS = ["all", "active", "paused", "matched", "onboarding"] as const;
+type SortKey = "name" | "age" | "income" | "matches" | "readiness" | "joined";
+type SortDir = "asc" | "desc";
+
+const STATUS_OPTS = ["all", "active", "paused", "matched", "onboarding"] as const;
+const GENDER_OPTS = ["all", "male", "female"] as const;
 
 export default function ClientsPage() {
   const router = useRouter();
   const { clients } = useAppStore();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [genderFilter, setGenderFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"name" | "age" | "joinedAt" | "completeness">("joinedAt");
+  const [status, setStatus] = useState<string>("all");
+  const [gender, setGender] = useState<string>("all");
+  const [sortKey, setSortKey] = useState<SortKey>("joined");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey(key); setSortDir("desc"); }
+  }
 
   const filtered = useMemo(() => {
+    const q = search.toLowerCase();
     return clients
       .filter((c) => {
-        const name = `${c.firstName} ${c.lastName}`.toLowerCase();
-        const matchSearch = name.includes(search.toLowerCase()) || c.city.toLowerCase().includes(search.toLowerCase());
-        const matchStatus = statusFilter === "all" || c.clientStatus === statusFilter;
-        const matchGender = genderFilter === "all" || c.gender === genderFilter;
-        return matchSearch && matchStatus && matchGender;
+        const nameMatch = `${c.firstName} ${c.lastName}`.toLowerCase().includes(q) || c.city.toLowerCase().includes(q);
+        return nameMatch && (status === "all" || c.clientStatus === status) && (gender === "all" || c.gender === gender);
       })
       .sort((a, b) => {
-        if (sortBy === "name") return a.firstName.localeCompare(b.firstName);
-        if (sortBy === "age") return a.age - b.age;
-        if (sortBy === "completeness") return b.profileCompleteness - a.profileCompleteness;
-        return new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime();
+        let v = 0;
+        if (sortKey === "name")      v = a.firstName.localeCompare(b.firstName);
+        else if (sortKey === "age")       v = a.age - b.age;
+        else if (sortKey === "income")    v = a.annualIncomeINR - b.annualIncomeINR;
+        else if (sortKey === "matches")   v = a.matchCount - b.matchCount;
+        else if (sortKey === "readiness") v = a.relationshipReadinessScore - b.relationshipReadinessScore;
+        else v = new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime();
+        return sortDir === "asc" ? v : -v;
       });
-  }, [clients, search, statusFilter, genderFilter, sortBy]);
+  }, [clients, search, status, gender, sortKey, sortDir]);
+
+  function SortIcon({ k }: { k: SortKey }) {
+    if (sortKey !== k) return <ChevronUp size={11} className="text-gray-300" />;
+    return sortDir === "asc" ? <ChevronUp size={11} className="text-gray-600" /> : <ChevronDown size={11} className="text-gray-600" />;
+  }
+
+  function Th({ children, k }: { children: React.ReactNode; k?: SortKey }) {
+    return (
+      <th
+        className={`px-4 py-2.5 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap ${k ? "cursor-pointer hover:text-gray-700 select-none" : ""}`}
+        onClick={k ? () => toggleSort(k) : undefined}
+      >
+        <div className="flex items-center gap-1">
+          {children}
+          {k && <SortIcon k={k} />}
+        </div>
+      </th>
+    );
+  }
 
   return (
-    <div className="p-6 max-w-[1400px]">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-zinc-100">Clients</h1>
-        <p className="text-sm text-zinc-500 mt-0.5">{clients.length} total clients assigned to you</p>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 mb-5">
-        <Input
-          placeholder="Search by name or city…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          icon={<Search size={14} />}
-          className="w-64"
-        />
-
-        <div className="flex items-center gap-1 bg-zinc-800/60 rounded-lg p-1 border border-zinc-700">
-          {STATUS_FILTERS.map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1 rounded-md text-xs font-medium capitalize transition-colors ${
-                statusFilter === s
-                  ? "bg-fuchsia-600 text-white"
-                  : "text-zinc-400 hover:text-zinc-200"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4 shrink-0">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h1 className="text-base font-semibold text-gray-900">Clients</h1>
+            <p className="text-xs text-gray-500 mt-0.5">{clients.length} clients · {clients.filter(c => c.clientStatus === "active").length} active</p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1 bg-zinc-800/60 rounded-lg p-1 border border-zinc-700">
-          {(["all", "male", "female"] as const).map((g) => (
-            <button
-              key={g}
-              onClick={() => setGenderFilter(g)}
-              className={`px-3 py-1 rounded-md text-xs font-medium capitalize transition-colors ${
-                genderFilter === g
-                  ? "bg-fuchsia-600 text-white"
-                  : "text-zinc-400 hover:text-zinc-200"
-              }`}
-            >
-              {g}
-            </button>
-          ))}
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Input
+            placeholder="Search name or city…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            icon={<Search size={13} />}
+            className="w-56 h-7 text-xs"
+          />
+
+          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden">
+            {STATUS_OPTS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatus(s)}
+                className={`px-2.5 py-1 text-xs capitalize transition-colors ${
+                  status === s ? "bg-gray-900 text-white" : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden">
+            {GENDER_OPTS.map((g) => (
+              <button
+                key={g}
+                onClick={() => setGender(g)}
+                className={`px-2.5 py-1 text-xs capitalize transition-colors ${
+                  gender === g ? "bg-gray-900 text-white" : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+
+          <span className="text-xs text-gray-400 ml-auto">{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
         </div>
-
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-          className="h-9 px-3 bg-zinc-800/60 border border-zinc-700 text-zinc-300 text-xs rounded-lg focus:outline-none focus:border-fuchsia-500"
-        >
-          <option value="joinedAt">Sort: Newest</option>
-          <option value="name">Sort: Name</option>
-          <option value="age">Sort: Age</option>
-          <option value="completeness">Sort: Profile %</option>
-        </select>
-
-        <span className="text-xs text-zinc-500 ml-auto">{filtered.length} results</span>
       </div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filtered.map((client, i) => (
-          <motion.div
-            key={client.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: Math.min(i * 0.02, 0.3) }}
-          >
-            <ClientCard client={client} onClick={() => router.push(`/clients/${client.id}`)} />
-          </motion.div>
-        ))}
+      {/* Table */}
+      <div className="flex-1 overflow-auto bg-gray-50">
+        <table className="w-full text-sm">
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-white border-b border-gray-200">
+              <Th k="name">Client</Th>
+              <Th>City</Th>
+              <Th>Status</Th>
+              <Th k="age">Age</Th>
+              <Th k="income">Income</Th>
+              <Th>Company</Th>
+              <Th k="matches">Matches</Th>
+              <Th k="readiness">Readiness</Th>
+              <Th>Profile</Th>
+              <Th>Last Contact</Th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 bg-white">
+            {filtered.map((client) => (
+              <Row key={client.id} client={client} onClick={() => router.push(`/clients/${client.id}`)} />
+            ))}
+          </tbody>
+        </table>
+        {filtered.length === 0 && (
+          <div className="bg-white text-center py-16 text-sm text-gray-400">No clients match your filters</div>
+        )}
       </div>
-
-      {filtered.length === 0 && (
-        <div className="text-center py-20 text-zinc-500">
-          <p className="text-lg">No clients found</p>
-          <p className="text-sm mt-1">Try adjusting your filters</p>
-        </div>
-      )}
     </div>
   );
 }
 
-function ClientCard({ client, onClick }: { client: Profile; onClick: () => void }) {
+function Row({ client, onClick }: { client: Profile; onClick: () => void }) {
   return (
-    <div
-      onClick={onClick}
-      className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 cursor-pointer hover:border-zinc-700 hover:bg-zinc-900/80 transition-all group"
-    >
-      <div className="flex items-start justify-between mb-3">
-        <Avatar id={client.id} name={`${client.firstName} ${client.lastName}`} size="md" />
-        <ClientStatusBadge status={client.clientStatus} />
-      </div>
-
-      <div className="mb-3">
-        <h3 className="font-semibold text-zinc-200 group-hover:text-fuchsia-300 transition-colors">
-          {client.firstName} {client.lastName}
-        </h3>
-        <p className="text-xs text-zinc-500">
-          {client.age}y · {client.city} · {client.gender === "male" ? "Male" : "Female"}
-        </p>
-      </div>
-
-      <div className="text-xs text-zinc-500 space-y-1 mb-3">
-        <p className="truncate">{client.designation} @ {client.currentCompany}</p>
-        <p>{formatCurrency(client.annualIncomeINR)} LPA</p>
-        <p>{client.religion} · {client.maritalStatus.replace("_", " ")}</p>
-      </div>
-
-      <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
-        <div className="flex items-center gap-1.5">
-          <CircularProgress value={client.profileCompleteness} size={28} strokeWidth={3} />
-          <span className="text-xs text-zinc-500">profile</span>
+    <tr onClick={onClick} className="hover:bg-gray-50 cursor-pointer transition-colors">
+      <td className="px-4 py-2.5">
+        <div className="flex items-center gap-2.5">
+          <Avatar id={client.id} name={`${client.firstName} ${client.lastName}`} size="sm" />
+          <div>
+            <p className="text-xs font-medium text-gray-900">{client.firstName} {client.lastName}</p>
+            <p className="text-[10px] text-gray-400">{client.religion} · {client.maritalStatus.replace("_", " ")}</p>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-zinc-500">{client.matchCount} matches</span>
-          <ArrowRight size={12} className="text-zinc-600 group-hover:text-fuchsia-400 transition-colors" />
+      </td>
+      <td className="px-4 py-2.5 text-xs text-gray-600 whitespace-nowrap">{client.city}</td>
+      <td className="px-4 py-2.5"><ClientStatusBadge status={client.clientStatus} /></td>
+      <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums">{client.age}</td>
+      <td className="px-4 py-2.5 text-xs text-gray-700 whitespace-nowrap">{formatCurrency(client.annualIncomeINR)}</td>
+      <td className="px-4 py-2.5">
+        <div>
+          <p className="text-xs text-gray-700 max-w-35 truncate">{client.currentCompany}</p>
+          <p className="text-[10px] text-gray-400 max-w-35 truncate">{client.designation}</p>
         </div>
-      </div>
-    </div>
+      </td>
+      <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums">{client.matchCount}</td>
+      <td className="px-4 py-2.5">
+        <span className={`text-xs font-semibold tabular-nums ${
+          client.relationshipReadinessScore >= 80 ? "text-green-700" :
+          client.relationshipReadinessScore >= 60 ? "text-amber-700" : "text-red-600"
+        }`}>
+          {client.relationshipReadinessScore}
+        </span>
+      </td>
+      <td className="px-4 py-2.5">
+        <div className="flex items-center gap-1.5">
+          <CircularProgress value={client.profileCompleteness} size={24} strokeWidth={2.5} />
+          <span className="text-[10px] text-gray-400">{client.profileCompleteness}%</span>
+        </div>
+      </td>
+      <td className="px-4 py-2.5 text-xs text-gray-400 whitespace-nowrap">
+        {client.lastContactedAt ? timeAgo(client.lastContactedAt) : "—"}
+      </td>
+    </tr>
   );
 }

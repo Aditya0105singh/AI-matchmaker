@@ -2,84 +2,80 @@ import { Badge } from "@/components/ui/badge";
 import { formatHeight, formatCurrency } from "@/lib/utils";
 import type { Profile } from "@/types";
 
-const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
-  <div className="flex items-start justify-between py-3 border-b border-zinc-800/60 last:border-0">
-    <span className="text-sm text-zinc-500">{label}</span>
-    <span className="text-sm text-zinc-200 text-right max-w-xs">{value}</span>
-  </div>
-);
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between py-2.5 border-b border-gray-100 last:border-0">
+      <span className="text-xs text-gray-500 w-36 shrink-0">{label}</span>
+      <span className="text-xs text-gray-800 text-right flex-1">{children}</span>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+        <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">{title}</h3>
+      </div>
+      <div className="px-4">{children}</div>
+    </div>
+  );
+}
 
 export function ProfilePreferences({ profile }: { profile: Profile }) {
   return (
-    <div className="space-y-6">
-      <div className="bg-zinc-800/30 rounded-xl border border-zinc-700/30 px-5">
-        <h3 className="text-sm font-semibold text-zinc-300 py-3 border-b border-zinc-800/60">Partner Preferences</h3>
-        <Row label="Age Range" value={`${profile.partnerAgeMin} – ${profile.partnerAgeMax} years`} />
-        <Row label="Height Range" value={`${formatHeight(profile.partnerHeightMinCm)} – ${formatHeight(profile.partnerHeightMaxCm)}`} />
-        <Row
-          label="Min Income Preferred"
-          value={profile.partnerIncomeMinLPA > 0 ? `${formatCurrency(profile.partnerIncomeMinLPA)} LPA` : "No preference"}
-        />
-        <Row
-          label="Education Preference"
-          value={
-            <div className="flex flex-wrap gap-1 justify-end">
-              {profile.partnerEducationPref.map((e) => <Badge key={e} variant="default">{e}</Badge>)}
-            </div>
-          }
-        />
-        <Row
-          label="Religion Preference"
-          value={
-            <div className="flex flex-wrap gap-1 justify-end">
-              {profile.partnerReligionPref.map((r) => <Badge key={r} variant="brand">{r}</Badge>)}
-            </div>
-          }
-        />
-        <Row
-          label="City Preference"
-          value={
-            <div className="flex flex-wrap gap-1 justify-end">
-              {profile.partnerCityPref.map((c) => <Badge key={c} variant="info">{c}</Badge>)}
-            </div>
-          }
-        />
-        <Row
-          label="Open to Relocate"
-          value={
-            <Badge variant={profile.openToRelocate === "yes" ? "success" : profile.openToRelocate === "no" ? "danger" : "warning"}>
-              {profile.openToRelocate}
-            </Badge>
-          }
-        />
-        <Row
-          label="Open to Pets"
-          value={
-            <Badge variant={profile.openToPets === "yes" ? "success" : profile.openToPets === "no" ? "danger" : "warning"}>
-              {profile.openToPets}
-            </Badge>
-          }
-        />
-        <Row
-          label="Want Kids"
-          value={
-            <Badge variant={profile.wantKids === "yes" ? "success" : profile.wantKids === "no" ? "danger" : "warning"}>
-              {profile.wantKids}
-            </Badge>
-          }
-        />
-      </div>
+    <div className="space-y-4">
+      <Section title="Partner Preferences">
+        <Row label="Age Range">{profile.partnerAgeMin}–{profile.partnerAgeMax} years</Row>
+        <Row label="Height Range">
+          {formatHeight(profile.partnerHeightMinCm)} – {formatHeight(profile.partnerHeightMaxCm)}
+        </Row>
+        <Row label="Min Income">
+          {profile.partnerIncomeMinLPA > 0 ? `${formatCurrency(profile.partnerIncomeMinLPA)} LPA` : "No preference"}
+        </Row>
+        <Row label="Education Pref">
+          <div className="flex flex-wrap gap-1 justify-end">
+            {profile.partnerEducationPref.map((e) => <Badge key={e}>{e}</Badge>)}
+          </div>
+        </Row>
+        <Row label="Religion Pref">
+          <div className="flex flex-wrap gap-1 justify-end">
+            {profile.partnerReligionPref.map((r) => <Badge key={r} variant="info">{r}</Badge>)}
+          </div>
+        </Row>
+        <Row label="City Preference">
+          <div className="flex flex-wrap gap-1 justify-end">
+            {profile.partnerCityPref.map((c) => <Badge key={c}>{c}</Badge>)}
+          </div>
+        </Row>
+        <Row label="Open to Relocate">
+          <Badge variant={profile.openToRelocate === "yes" ? "success" : profile.openToRelocate === "no" ? "danger" : "warning"}>
+            {profile.openToRelocate}
+          </Badge>
+        </Row>
+        <Row label="Want Kids">
+          <Badge variant={profile.wantKids === "yes" ? "success" : profile.wantKids === "no" ? "danger" : "warning"}>
+            {profile.wantKids}
+          </Badge>
+        </Row>
+        <Row label="Open to Pets">
+          <Badge variant={profile.openToPets === "yes" ? "success" : profile.openToPets === "no" ? "danger" : "warning"}>
+            {profile.openToPets}
+          </Badge>
+        </Row>
+      </Section>
 
-      <div className="bg-zinc-800/30 rounded-xl border border-zinc-700/30 px-5">
-        <h3 className="text-sm font-semibold text-zinc-300 py-3 border-b border-zinc-800/60">Their Own Profile</h3>
-        <Row label="Religion" value={profile.religion} />
-        <Row label="Caste" value={profile.caste} />
-        <Row label="Family Values" value={profile.familyValues} />
-        <Row label="Diet" value={profile.diet.replace("_", " ")} />
-        <Row label="Smoking" value={profile.smoking} />
-        <Row label="Drinking" value={profile.drinking} />
-        {profile.personalityType && <Row label="MBTI Type" value={<Badge variant="violet">{profile.personalityType}</Badge>} />}
-      </div>
+      <Section title="Their Own Profile">
+        <Row label="Religion">{profile.religion}</Row>
+        <Row label="Caste">{profile.caste}</Row>
+        <Row label="Family Values">{profile.familyValues}</Row>
+        <Row label="Diet">{profile.diet.replace("_", " ")}</Row>
+        <Row label="Smoking">{profile.smoking}</Row>
+        <Row label="Drinking">{profile.drinking}</Row>
+        {profile.personalityType && (
+          <Row label="MBTI Type"><Badge variant="purple">{profile.personalityType}</Badge></Row>
+        )}
+      </Section>
     </div>
   );
 }

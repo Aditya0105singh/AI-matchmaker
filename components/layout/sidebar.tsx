@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import {
-  Heart, LayoutDashboard, Users, GitBranch, LogOut,
-  ChevronLeft, ChevronRight, Bot, Bell, Settings
+  LayoutDashboard, Users, LogOut, ChevronLeft,
+  ChevronRight, Sparkles, Heart
 } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { Avatar } from "@/components/ui/avatar";
@@ -13,7 +12,7 @@ import toast from "react-hot-toast";
 
 const NAV = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/clients", icon: Users, label: "Clients" },
+  { href: "/clients",   icon: Users,           label: "Clients"   },
 ];
 
 export function Sidebar() {
@@ -23,137 +22,95 @@ export function Sidebar() {
 
   function handleLogout() {
     logout();
-    toast("Logged out. See you soon!", { icon: "👋" });
+    toast("Logged out", { icon: "👋" });
     router.push("/login");
   }
 
+  const collapsed = sidebarCollapsed;
+
   return (
-    <motion.aside
-      initial={false}
-      animate={{ width: sidebarCollapsed ? 64 : 220 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="flex flex-col h-screen bg-zinc-900/80 backdrop-blur-sm border-r border-zinc-800 shrink-0 overflow-hidden z-20"
+    <aside
+      className="flex flex-col h-screen bg-white border-r border-gray-200 shrink-0 z-20 transition-[width] duration-200"
+      style={{ width: collapsed ? 52 : 216 }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-zinc-800 shrink-0">
-        <div className="h-8 w-8 rounded-lg bg-linear-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center shrink-0 shadow-lg shadow-fuchsia-900/30">
-          <Heart size={16} className="text-white fill-white" />
+      <div className="flex items-center gap-2.5 px-3.5 py-4 border-b border-gray-200 shrink-0 overflow-hidden">
+        <div className="h-7 w-7 rounded-lg bg-gray-900 flex items-center justify-center shrink-0">
+          <Heart size={13} className="text-white fill-white" />
         </div>
-        <AnimatePresence>
-          {!sidebarCollapsed && (
-            <motion.span
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              transition={{ duration: 0.15 }}
-              className="font-bold text-sm text-zinc-100 whitespace-nowrap"
-            >
-              TDC Matchmaker
-            </motion.span>
-          )}
-        </AnimatePresence>
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-gray-900 whitespace-nowrap leading-tight">The Date Crew</p>
+            <p className="text-[10px] text-gray-400 whitespace-nowrap">Matchmaker Platform</p>
+          </div>
+        )}
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto overflow-x-hidden">
         {NAV.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
           return (
             <Link
               key={href}
               href={href}
+              title={collapsed ? label : undefined}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
+                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-colors group",
                 active
-                  ? "bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-200"
-                  : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                  ? "bg-gray-100 text-gray-900 font-medium"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
-              <Icon size={17} className="shrink-0" />
-              <AnimatePresence>
-                {!sidebarCollapsed && (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.1 }}
-                    className="whitespace-nowrap"
-                  >
-                    {label}
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              <Icon size={15} className="shrink-0" />
+              {!collapsed && <span className="whitespace-nowrap">{label}</span>}
             </Link>
           );
         })}
 
-        {/* AI Copilot button */}
+        {/* AI Assistant */}
         <button
           onClick={() => setCopilotOpen(true)}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-all w-full"
+          title={collapsed ? "AI Assistant" : undefined}
+          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors w-full mt-1"
         >
-          <Bot size={17} className="shrink-0 text-fuchsia-400" />
-          <AnimatePresence>
-            {!sidebarCollapsed && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
-                className="whitespace-nowrap"
-              >
-                AI Copilot
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <Sparkles size={15} className="shrink-0 text-blue-500" />
+          {!collapsed && <span className="whitespace-nowrap">AI Assistant</span>}
         </button>
       </nav>
 
-      {/* Collapse toggle */}
-      <div className="px-3 py-2 border-t border-zinc-800">
+      {/* Collapse */}
+      <div className="px-2 py-2 border-t border-gray-200">
         <button
           onClick={toggleSidebar}
-          className="flex items-center justify-center w-full h-9 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all"
-          title={sidebarCollapsed ? "Expand" : "Collapse"}
+          className="flex items-center justify-center w-full h-7 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
       </div>
 
       {/* User */}
-      <div className="px-3 pb-4 border-t border-zinc-800 pt-3">
-        <div className="flex items-center gap-3">
+      <div className="px-2.5 pb-3 border-t border-gray-200 pt-2.5 overflow-hidden">
+        <div className="flex items-center gap-2">
           <Avatar id="MM_001" name="Riya Kapoor" size="sm" className="shrink-0" />
-          <AnimatePresence>
-            {!sidebarCollapsed && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
-                className="flex-1 min-w-0"
-              >
-                <p className="text-xs font-medium text-zinc-200 truncate">Riya Kapoor</p>
-                <p className="text-xs text-zinc-500 truncate">Senior Matchmaker</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {!sidebarCollapsed && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={handleLogout}
-                className="p-1.5 text-zinc-500 hover:text-rose-400 transition-colors rounded"
-                title="Logout"
-              >
-                <LogOut size={14} />
-              </motion.button>
-            )}
-          </AnimatePresence>
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-gray-800 truncate">Riya Kapoor</p>
+              <p className="text-[10px] text-gray-400 truncate">Senior Matchmaker</p>
+            </div>
+          )}
+          {!collapsed && (
+            <button
+              onClick={handleLogout}
+              className="p-1 text-gray-400 hover:text-red-500 transition-colors rounded"
+              title="Sign out"
+            >
+              <LogOut size={13} />
+            </button>
+          )}
         </div>
       </div>
-    </motion.aside>
+    </aside>
   );
 }

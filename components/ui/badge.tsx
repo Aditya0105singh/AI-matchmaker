@@ -2,17 +2,17 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const badgeVariants = cva(
-  "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium border transition-colors",
+  "inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-medium",
   {
     variants: {
       variant: {
-        default: "bg-zinc-800 text-zinc-300 border-zinc-700",
-        brand: "bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/30",
-        success: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-        warning: "bg-amber-500/15 text-amber-300 border-amber-500/30",
-        danger: "bg-rose-500/15 text-rose-300 border-rose-500/30",
-        info: "bg-sky-500/15 text-sky-300 border-sky-500/30",
-        violet: "bg-violet-500/15 text-violet-300 border-violet-500/30",
+        default:  "bg-gray-100 text-gray-700",
+        outline:  "border border-gray-300 text-gray-600",
+        success:  "bg-green-50 text-green-700",
+        warning:  "bg-amber-50 text-amber-700",
+        danger:   "bg-red-50 text-red-700",
+        info:     "bg-blue-50 text-blue-700",
+        purple:   "bg-purple-50 text-purple-700",
       },
     },
     defaultVariants: { variant: "default" },
@@ -21,20 +21,37 @@ const badgeVariants = cva(
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {}
-
-export function Badge({ className, variant, ...props }: BadgeProps) {
-  return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
+    VariantProps<typeof badgeVariants> {
+  dot?: boolean;
 }
 
+export function Badge({ className, variant, dot, children, ...props }: BadgeProps) {
+  return (
+    <span className={cn(badgeVariants({ variant }), className)} {...props}>
+      {dot && (
+        <span className={cn("h-1.5 w-1.5 rounded-full", {
+          "bg-gray-500":   variant === "default" || variant === "outline",
+          "bg-green-500":  variant === "success",
+          "bg-amber-500":  variant === "warning",
+          "bg-red-500":    variant === "danger",
+          "bg-blue-500":   variant === "info",
+          "bg-purple-500": variant === "purple",
+        })} />
+      )}
+      {children}
+    </span>
+  );
+}
+
+const STATUS_MAP: Record<string, { label: string; variant: BadgeProps["variant"] }> = {
+  active:      { label: "Active",      variant: "success" },
+  paused:      { label: "Paused",      variant: "default" },
+  matched:     { label: "Matched",     variant: "info"    },
+  onboarding:  { label: "Onboarding",  variant: "warning" },
+  churned:     { label: "Churned",     variant: "danger"  },
+};
+
 export function ClientStatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; variant: BadgeProps["variant"] }> = {
-    active: { label: "Active", variant: "success" },
-    paused: { label: "Paused", variant: "warning" },
-    matched: { label: "Matched", variant: "brand" },
-    onboarding: { label: "Onboarding", variant: "info" },
-    churned: { label: "Churned", variant: "danger" },
-  };
-  const config = map[status] || { label: status, variant: "default" };
-  return <Badge variant={config.variant}>{config.label}</Badge>;
+  const config = STATUS_MAP[status] ?? { label: status, variant: "default" as const };
+  return <Badge variant={config.variant} dot>{config.label}</Badge>;
 }

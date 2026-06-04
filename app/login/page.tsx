@@ -1,8 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Heart, Lock, User, Eye, EyeOff, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { Heart, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +10,7 @@ import toast from "react-hot-toast";
 export default function LoginPage() {
   const router = useRouter();
   const login = useAppStore((s) => s.login);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -20,142 +19,108 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
-    // Read directly from the DOM — bypasses autofill/onChange sync issues
-    const formData = new FormData(e.currentTarget);
-    const username = (formData.get("username") as string ?? "").trim();
-    const password = (formData.get("password") as string ?? "").trim();
-
-    await new Promise((r) => setTimeout(r, 500));
-
+    const fd = new FormData(e.currentTarget);
+    const username = ((fd.get("username") as string) ?? "").trim();
+    const password = ((fd.get("password") as string) ?? "").trim();
+    await new Promise((r) => setTimeout(r, 400));
     const ok = login(username, password);
     setLoading(false);
-
     if (ok) {
       toast.success("Welcome back, Riya!");
       router.push("/dashboard");
     } else {
-      setError("Invalid credentials. Try matchmaker / tdc2024");
+      setError("Invalid credentials");
     }
   }
 
   function fillDemo() {
-    const form = formRef.current;
-    if (!form) return;
-    const u = form.elements.namedItem("username") as HTMLInputElement;
-    const p = form.elements.namedItem("password") as HTMLInputElement;
-    if (u) u.value = "matchmaker";
-    if (p) p.value = "tdc2024";
+    const f = formRef.current;
+    if (!f) return;
+    (f.elements.namedItem("username") as HTMLInputElement).value = "matchmaker";
+    (f.elements.namedItem("password") as HTMLInputElement).value = "tdc2024";
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-zinc-950">
-      {/* Ambient background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rose-600/5 rounded-full blur-3xl" />
-      </div>
-
-      {/* Floating particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-fuchsia-400/30 rounded-full"
-          style={{ left: `${(i * 5 + 10) % 90}%`, top: `${(i * 7 + 15) % 85}%` }}
-          animate={{ y: [-10, 10, -10], opacity: [0.3, 0.7, 0.3] }}
-          transition={{ duration: 3 + (i % 3), repeat: Infinity, delay: i * 0.2 }}
-        />
-      ))}
-
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative w-full max-w-md mx-4"
-      >
-        <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-8 shadow-2xl">
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="h-14 w-14 rounded-2xl bg-linear-to-br from-fuchsia-600 to-violet-700 flex items-center justify-center mb-4 shadow-lg shadow-fuchsia-900/40">
-              <Heart size={26} className="text-white fill-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-zinc-100">TDC Matchmaker AI</h1>
-            <p className="text-sm text-zinc-500 mt-1">The Date Crew · Internal Platform</p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <div className="flex items-center gap-2.5 mb-8">
+          <div className="h-8 w-8 rounded-lg bg-gray-900 flex items-center justify-center">
+            <Heart size={15} className="text-white fill-white" />
           </div>
-
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-zinc-200">Welcome back</h2>
-            <p className="text-sm text-zinc-500">Sign in to your matchmaker dashboard</p>
+          <div>
+            <p className="text-sm font-semibold text-gray-900 leading-tight">The Date Crew</p>
+            <p className="text-[10px] text-gray-400">Matchmaker Platform</p>
           </div>
+        </div>
 
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+        {/* Card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+          <h1 className="text-base font-semibold text-gray-900 mb-1">Sign in</h1>
+          <p className="text-sm text-gray-500 mb-5">Access your matchmaking dashboard</p>
+
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Username</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Username</label>
               <Input
                 name="username"
                 type="text"
                 placeholder="matchmaker"
                 defaultValue=""
-                icon={<User size={15} />}
+                icon={<User size={13} />}
                 autoComplete="username"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Password</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Password</label>
               <div className="relative">
                 <Input
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPass ? "text" : "password"}
                   placeholder="••••••••"
                   defaultValue=""
-                  icon={<Lock size={15} />}
+                  icon={<Lock size={13} />}
                   autoComplete="current-password"
                   required
                   error={error}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  {showPass ? <EyeOff size={13} /> : <Eye size={13} />}
                 </button>
               </div>
             </div>
 
-            <Button type="submit" className="w-full mt-2" size="lg" loading={loading}>
-              {!loading && <Sparkles size={16} />}
-              Sign In
+            <Button type="submit" variant="primary" size="lg" className="w-full mt-1" loading={loading}>
+              Sign in
             </Button>
           </form>
 
-          {/* Demo credentials — click to fill */}
+          {/* Demo fill */}
           <button
             type="button"
             onClick={fillDemo}
-            className="mt-6 w-full p-3 bg-zinc-800/50 rounded-xl border border-zinc-700/50 hover:border-zinc-600 transition-colors text-left"
+            className="mt-4 w-full px-3 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-left transition-colors"
           >
-            <p className="text-xs text-zinc-500 font-medium mb-1.5">Demo Credentials <span className="text-fuchsia-500">(click to fill)</span></p>
-            <div className="space-y-1">
-              <div className="flex gap-2 text-xs">
-                <span className="text-zinc-500 w-20">Username:</span>
-                <code className="text-fuchsia-400">matchmaker</code>
-              </div>
-              <div className="flex gap-2 text-xs">
-                <span className="text-zinc-500 w-20">Password:</span>
-                <code className="text-fuchsia-400">tdc2024</code>
-              </div>
+            <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-1">
+              Demo Credentials — click to fill
+            </p>
+            <div className="flex items-center gap-4 text-xs text-gray-600">
+              <span><span className="text-gray-400">user: </span>matchmaker</span>
+              <span><span className="text-gray-400">pass: </span>tdc2024</span>
             </div>
           </button>
         </div>
 
-        <p className="text-center text-xs text-zinc-600 mt-4">
-          © 2024 The Date Crew · Matchmaker Platform
+        <p className="text-center text-[11px] text-gray-400 mt-5">
+          © 2024 The Date Crew · Internal Platform
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

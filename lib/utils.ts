@@ -36,23 +36,23 @@ export function timeAgo(date: string): string {
 }
 
 export function getScoreColor(score: number): string {
-  if (score >= 80) return "text-emerald-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-rose-400";
+  if (score >= 80) return "text-green-700";
+  if (score >= 60) return "text-amber-700";
+  return "text-red-600";
 }
 
 export function getScoreBg(score: number): string {
-  if (score >= 80) return "bg-emerald-500/20 border-emerald-500/30";
-  if (score >= 60) return "bg-amber-500/20 border-amber-500/30";
-  return "bg-rose-500/20 border-rose-500/30";
+  if (score >= 80) return "bg-green-50 border-green-200";
+  if (score >= 60) return "bg-amber-50 border-amber-200";
+  return "bg-red-50 border-red-200";
 }
 
 export function getScoreLabel(score: number): string {
-  if (score >= 85) return "Exceptional Match";
-  if (score >= 75) return "High Potential";
-  if (score >= 65) return "Good Match";
-  if (score >= 50) return "Moderate Match";
-  return "Low Compatibility";
+  if (score >= 85) return "Excellent";
+  if (score >= 75) return "Strong";
+  if (score >= 65) return "Good";
+  if (score >= 50) return "Fair";
+  return "Low";
 }
 
 export function getInitials(name: string): string {
