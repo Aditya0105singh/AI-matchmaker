@@ -150,24 +150,36 @@ function generateProfile(gender: "male" | "female", clientStatus?: Profile["clie
 }
 
 // --- Seed the data ---
-// 20 male clients (managed by the matchmaker)
-export const maleClients: Profile[] = Array.from({ length: 20 }, (_, i) =>
-  generateProfile("male", i < 15 ? "active" : i < 18 ? "paused" : "matched")
-);
+// 70 male clients managed by the matchmaker
+export const maleClients: Profile[] = Array.from({ length: 70 }, (_, i) => {
+  let status: Profile["clientStatus"];
+  if (i < 42)      status = "active";
+  else if (i < 55) status = "paused";
+  else if (i < 62) status = "matched";
+  else if (i < 68) status = "onboarding";
+  else             status = "churned";
+  return generateProfile("male", status);
+});
 
-// 100 female candidates (the matchmaking pool)
+// 30 female clients managed by the matchmaker
+export const femaleClients: Profile[] = Array.from({ length: 30 }, (_, i) => {
+  let status: Profile["clientStatus"];
+  if (i < 18)      status = "active";
+  else if (i < 23) status = "paused";
+  else if (i < 27) status = "matched";
+  else if (i < 29) status = "onboarding";
+  else             status = "churned";
+  return generateProfile("female", status);
+});
+
+export const allClients: Profile[] = [...maleClients, ...femaleClients];
+
+// 100 female candidates (matching pool for male clients)
 export const femalePool: Profile[] = Array.from({ length: 100 }, () =>
   generateProfile("female")
 );
 
-// 5 female clients (also managed)
-export const femaleClients: Profile[] = Array.from({ length: 5 }, (_, i) =>
-  generateProfile("female", i < 3 ? "active" : "paused")
-);
-
-export const allClients: Profile[] = [...maleClients, ...femaleClients];
-
-// 100 male candidates (for female clients)
+// 100 male candidates (matching pool for female clients)
 export const malePool: Profile[] = Array.from({ length: 100 }, () =>
   generateProfile("male")
 );
