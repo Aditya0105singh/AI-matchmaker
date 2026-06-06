@@ -93,8 +93,8 @@ export function AICopilot() {
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
       {/* Chat popup */}
       {copilotOpen && (
-        <div className="animate-chat-popup w-[360px] bg-white border border-gray-200 rounded-2xl shadow-2xl shadow-gray-900/15 flex flex-col overflow-hidden"
-          style={{ maxHeight: "520px" }}>
+        <div className="animate-chat-popup w-[calc(100vw-40px)] max-w-90 bg-white border border-gray-200 rounded-2xl shadow-2xl shadow-gray-900/15 flex flex-col overflow-hidden"
+          style={{ maxHeight: "min(520px, calc(100dvh - 100px))" }}>
 
           {/* Header */}
           <div className="flex items-center gap-2.5 px-4 py-3 border-b border-gray-100 bg-gray-50 shrink-0">

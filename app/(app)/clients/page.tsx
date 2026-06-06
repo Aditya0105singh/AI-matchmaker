@@ -54,10 +54,10 @@ export default function ClientsPage() {
     return sortDir === "asc" ? <ChevronUp size={11} className="text-gray-600" /> : <ChevronDown size={11} className="text-gray-600" />;
   }
 
-  function Th({ children, k }: { children: React.ReactNode; k?: SortKey }) {
+  function Th({ children, k, className = "" }: { children: React.ReactNode; k?: SortKey; className?: string }) {
     return (
       <th
-        className={`px-4 py-2.5 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap ${k ? "cursor-pointer hover:text-gray-700 select-none" : ""}`}
+        className={`px-4 py-2.5 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap ${k ? "cursor-pointer hover:text-gray-700 select-none" : ""} ${className}`}
         onClick={k ? () => toggleSort(k) : undefined}
       >
         <div className="flex items-center gap-1">
@@ -71,30 +71,31 @@ export default function ClientsPage() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 shrink-0">
-        <div className="flex items-start justify-between mb-4">
+      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 shrink-0">
+        <div className="flex items-start justify-between mb-3">
           <div>
             <h1 className="text-base font-semibold text-gray-900">Clients</h1>
             <p className="text-xs text-gray-500 mt-0.5">{clients.length} clients · {clients.filter(c => c.clientStatus === "active").length} active</p>
           </div>
+          <span className="text-xs text-gray-400 self-center">{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
           <Input
             placeholder="Search name or city…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             icon={<Search size={13} />}
-            className="w-56 h-7 text-xs"
+            className="w-full sm:w-52 h-8 text-xs"
           />
 
-          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden">
+          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden self-start sm:self-auto">
             {STATUS_OPTS.map((s) => (
               <button
                 key={s}
                 onClick={() => setStatus(s)}
-                className={`px-2.5 py-1 text-xs capitalize transition-colors ${
+                className={`px-2.5 py-1.5 text-xs capitalize transition-colors ${
                   status === s ? "bg-gray-900 text-white" : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -103,12 +104,12 @@ export default function ClientsPage() {
             ))}
           </div>
 
-          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden">
+          <div className="flex items-center bg-white border border-gray-300 rounded-md overflow-hidden self-start sm:self-auto">
             {GENDER_OPTS.map((g) => (
               <button
                 key={g}
                 onClick={() => setGender(g)}
-                className={`px-2.5 py-1 text-xs capitalize transition-colors ${
+                className={`px-2.5 py-1.5 text-xs capitalize transition-colors ${
                   gender === g ? "bg-gray-900 text-white" : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -116,26 +117,25 @@ export default function ClientsPage() {
               </button>
             ))}
           </div>
-
-          <span className="text-xs text-gray-400 ml-auto">{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
         </div>
       </div>
 
       {/* Table */}
       <div className="flex-1 overflow-auto bg-gray-50">
+        <div className="min-w-full overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="sticky top-0 z-10">
             <tr className="bg-white border-b border-gray-200">
               <Th k="name">Client</Th>
-              <Th>City</Th>
               <Th>Status</Th>
-              <Th k="age">Age</Th>
-              <Th k="income">Income</Th>
-              <Th>Company</Th>
-              <Th k="matches">Matches</Th>
-              <Th k="readiness">Readiness</Th>
-              <Th>Profile</Th>
-              <Th>Last Contact</Th>
+              <Th k="age" className="hidden sm:table-cell">Age</Th>
+              <Th>City</Th>
+              <Th k="income" className="hidden md:table-cell">Income</Th>
+              <Th className="hidden md:table-cell">Company</Th>
+              <Th k="matches" className="hidden sm:table-cell">Matches</Th>
+              <Th k="readiness" className="hidden lg:table-cell">Readiness</Th>
+              <Th className="hidden lg:table-cell">Profile</Th>
+              <Th className="hidden xl:table-cell">Last Contact</Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
@@ -144,6 +144,7 @@ export default function ClientsPage() {
             ))}
           </tbody>
         </table>
+        </div>
         {filtered.length === 0 && (
           <div className="bg-white text-center py-16 text-sm text-gray-400">No clients match your filters</div>
         )}
@@ -164,18 +165,18 @@ function Row({ client, onClick }: { client: Profile; onClick: () => void }) {
           </div>
         </div>
       </td>
-      <td className="px-4 py-2.5 text-xs text-gray-600 whitespace-nowrap">{client.city}</td>
       <td className="px-4 py-2.5"><ClientStatusBadge status={client.clientStatus} /></td>
-      <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums">{client.age}</td>
-      <td className="px-4 py-2.5 text-xs text-gray-700 whitespace-nowrap">{formatCurrency(client.annualIncomeINR)}</td>
-      <td className="px-4 py-2.5">
+      <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums hidden sm:table-cell">{client.age}</td>
+      <td className="px-4 py-2.5 text-xs text-gray-600 whitespace-nowrap">{client.city}</td>
+      <td className="px-4 py-2.5 text-xs text-gray-700 whitespace-nowrap hidden md:table-cell">{formatCurrency(client.annualIncomeINR)}</td>
+      <td className="px-4 py-2.5 hidden md:table-cell">
         <div>
           <p className="text-xs text-gray-700 max-w-35 truncate">{client.currentCompany}</p>
           <p className="text-[10px] text-gray-400 max-w-35 truncate">{client.designation}</p>
         </div>
       </td>
-      <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums">{client.matchCount}</td>
-      <td className="px-4 py-2.5">
+      <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums hidden sm:table-cell">{client.matchCount}</td>
+      <td className="px-4 py-2.5 hidden lg:table-cell">
         <span className={`text-xs font-semibold tabular-nums ${
           client.relationshipReadinessScore >= 80 ? "text-green-700" :
           client.relationshipReadinessScore >= 60 ? "text-amber-700" : "text-red-600"
@@ -183,13 +184,13 @@ function Row({ client, onClick }: { client: Profile; onClick: () => void }) {
           {client.relationshipReadinessScore}
         </span>
       </td>
-      <td className="px-4 py-2.5">
+      <td className="px-4 py-2.5 hidden lg:table-cell">
         <div className="flex items-center gap-1.5">
           <CircularProgress value={client.profileCompleteness} size={24} strokeWidth={2.5} />
           <span className="text-[10px] text-gray-400">{client.profileCompleteness}%</span>
         </div>
       </td>
-      <td className="px-4 py-2.5 text-xs text-gray-400 whitespace-nowrap">
+      <td className="px-4 py-2.5 text-xs text-gray-400 whitespace-nowrap hidden xl:table-cell">
         {client.lastContactedAt ? timeAgo(client.lastContactedAt) : "—"}
       </td>
     </tr>

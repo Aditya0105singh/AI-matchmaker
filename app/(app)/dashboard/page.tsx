@@ -83,7 +83,7 @@ export default function DashboardPage() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0">
         <div>
           <h1 className="text-base font-semibold text-gray-900">Dashboard</h1>
           <p className="text-xs text-gray-500 mt-0.5">Your matchmaking pipeline overview</p>
@@ -93,7 +93,7 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-5">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-5">
         {/* Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <KpiCard label="Total Clients"  value={stats.total}            icon={<Users size={13} />} accent="gray"   />
@@ -113,14 +113,16 @@ export default function DashboardPage() {
                 View all <ArrowRight size={11} />
               </button>
             </div>
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50">
-                  {["Client", "City", "Status", "Matches", "Readiness", "Last Contact"].map((h) => (
-                    <th key={h} className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap">
-                      {h}
-                    </th>
-                  ))}
+                  <th className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap">Client</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap hidden sm:table-cell">City</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap">Status</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap hidden md:table-cell">Matches</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap hidden md:table-cell">Readiness</th>
+                  <th className="px-4 py-2 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wide whitespace-nowrap hidden lg:table-cell">Last Contact</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -139,10 +141,10 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-2.5 text-xs text-gray-600 whitespace-nowrap">{client.city}</td>
+                    <td className="px-4 py-2.5 text-xs text-gray-600 whitespace-nowrap hidden sm:table-cell">{client.city}</td>
                     <td className="px-4 py-2.5"><ClientStatusBadge status={client.clientStatus} /></td>
-                    <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums">{client.matchCount}</td>
-                    <td className="px-4 py-2.5">
+                    <td className="px-4 py-2.5 text-xs text-gray-700 tabular-nums hidden md:table-cell">{client.matchCount}</td>
+                    <td className="px-4 py-2.5 hidden md:table-cell">
                       <span className={`text-xs font-medium tabular-nums ${
                         client.relationshipReadinessScore >= 80 ? "text-green-700" :
                         client.relationshipReadinessScore >= 60 ? "text-amber-700" : "text-red-600"
@@ -150,13 +152,14 @@ export default function DashboardPage() {
                         {client.relationshipReadinessScore}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-xs text-gray-400 whitespace-nowrap">
+                    <td className="px-4 py-2.5 text-xs text-gray-400 whitespace-nowrap hidden lg:table-cell">
                       {client.lastContactedAt ? timeAgo(client.lastContactedAt) : "—"}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Right column */}

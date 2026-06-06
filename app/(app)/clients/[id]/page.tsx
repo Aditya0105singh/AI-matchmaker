@@ -70,7 +70,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
   return (
     <div className="h-full flex flex-col">
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center justify-between shrink-0">
         <button
           onClick={() => router.push("/clients")}
           className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors"
@@ -81,36 +81,38 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
           <Button variant="ghost" size="sm"
             onClick={() => { setCopilotContext({ clientId: client.id }); setCopilotOpen(true); }}
           >
-            <Sparkles size={13} className="text-blue-500" /> AI Assistant
+            <Sparkles size={13} className="text-blue-500" />
+            <span className="hidden sm:inline">AI Assistant</span>
           </Button>
           <Button variant="secondary" size="sm" onClick={() => setTab("matches")}>
-            <Heart size={13} /> Matches
+            <Heart size={13} />
+            <span className="hidden sm:inline">Matches</span>
           </Button>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
         {/* Profile header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-5">
-          <div className="flex items-start gap-4">
-            <Avatar id={client.id} name={`${client.firstName} ${client.lastName}`} size="xl" />
+        <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-4 md:py-5">
+          <div className="flex items-start gap-3 md:gap-4">
+            <Avatar id={client.id} name={`${client.firstName} ${client.lastName}`} size="xl" className="shrink-0" />
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-lg font-semibold text-gray-900">{client.firstName} {client.lastName}</h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-base md:text-lg font-semibold text-gray-900">{client.firstName} {client.lastName}</h1>
                 <ClientStatusBadge status={client.clientStatus} />
               </div>
-              <p className="text-sm text-gray-600 mt-0.5">
+              <p className="text-xs md:text-sm text-gray-600 mt-0.5">
                 {client.age}y · {client.gender === "male" ? "Male" : "Female"} · {client.city}, {client.state}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs md:text-sm text-gray-500 truncate">
                 {client.designation} at {client.currentCompany} · {formatCurrency(client.annualIncomeINR)} LPA
               </p>
-              <p className="text-sm text-gray-500">{client.religion} · {client.caste} · {client.maritalStatus.replace("_", " ")}</p>
+              <p className="text-xs md:text-sm text-gray-500">{client.religion} · {client.caste} · {client.maritalStatus.replace("_", " ")}</p>
 
               {/* Quick stats */}
-              <div className="flex items-center gap-5 mt-3">
+              <div className="flex items-center gap-3 md:gap-5 mt-2 md:mt-3 flex-wrap">
                 <div className="flex items-center gap-1.5">
-                  <CircularProgress value={client.profileCompleteness} size={30} strokeWidth={3} />
+                  <CircularProgress value={client.profileCompleteness} size={28} strokeWidth={3} />
                   <div>
                     <p className="text-[10px] text-gray-400 leading-none">Profile</p>
                     <p className="text-xs font-medium text-gray-700">{client.profileCompleteness}%</p>
@@ -126,19 +128,19 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Tabs */}
-        <div className="bg-white border-b border-gray-200 px-6">
-          <div className="flex gap-0 -mb-px overflow-x-auto">
+        <div className="bg-white border-b border-gray-200 px-2 md:px-6">
+          <div className="flex gap-0 -mb-px overflow-x-auto scrollbar-hide">
             {TABS.map(({ id: tid, label, icon: Icon }) => (
               <button
                 key={tid}
                 onClick={() => setTab(tid)}
-                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                className={`flex items-center gap-1 md:gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   tab === tid
                     ? "border-indigo-600 text-indigo-700"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                <Icon size={13} />
+                <Icon size={12} />
                 {label}
               </button>
             ))}
@@ -146,7 +148,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Tab content */}
-        <div className="p-6 max-w-5xl bg-[#F4F6F8] min-h-full">
+        <div className="p-4 md:p-6 max-w-5xl bg-[#F4F6F8] min-h-full">
           {tab === "overview" && <ProfileOverview profile={client} />}
           {tab === "family" && <ProfileFamily profile={client} />}
           {tab === "preferences" && <ProfilePreferences profile={client} />}
